@@ -375,6 +375,7 @@ code.inline {
     <button role="tab" data-tab="production" aria-selected="false">ฝ่ายผลิต</button>
     <button role="tab" data-tab="delivery"  aria-selected="false">ฝ่ายขนส่ง</button>
     <button role="tab" data-tab="stock"     aria-selected="false">ฝ่ายสต็อก</button>
+    <button role="tab" data-tab="finance"   aria-selected="false">การเงิน</button>
   </nav>
 
   <main id="main">
@@ -1640,6 +1641,24 @@ async function execShowDetail(period) {
 /* ══════════════════════════════════════════════════════════════════════════
    ROUTER
    ══════════════════════════════════════════════════════════════════════════ */
+/* ── [FINANCE] แท็บการเงิน (บัญชี) — ฝัง dashboard ฝั่ง Express ผ่าน iframe ──
+   ไฟล์บัญชีเป็น dashboard แยกที่ดึงข้อมูลสดจาก Supabase อยู่แล้ว (โปรเจ็กต์เดียวกัน)
+   จึงฝังทั้งหน้าเป็น iframe ได้เลย — ไม่ชนกับ CSS/JS ของหน้านี้ */
+const FINANCE_DASH_URL = 'express_dashboard_live.html';
+function renderFinance(root) {
+  // full-bleed: ทะลุกรอบ max-width ของ <main> ออกไปเต็มความกว้างจอ
+  const card = el('div');
+  card.style.cssText = 'padding:0;margin:0;overflow:hidden;border-radius:0;background:#fff;'
+    + 'width:100vw;position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;';
+  const frame = el('iframe');
+  frame.title = 'Dashboard การเงิน (บัญชี)';
+  frame.src = FINANCE_DASH_URL;
+  frame.loading = 'lazy';
+  frame.style.cssText = 'width:100%;height:calc(100vh - 138px);min-height:600px;border:0;display:block;background:#fff;';
+  card.appendChild(frame);
+  root.appendChild(card);
+}
+
 const RENDERERS = {
   exec:       renderExec,
   overview:   renderOverview,
@@ -1647,6 +1666,7 @@ const RENDERERS = {
   production: renderProduction,
   delivery:   renderDelivery,
   stock:      renderStock,
+  finance:    renderFinance,
 };
 let currentTab = 'exec';
 
